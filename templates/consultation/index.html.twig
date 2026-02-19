@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Consultation index{% endblock %}
+
+{% block body %}
+    <h1>Consultation index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Age</th>
+                <th>Description</th>
+                <th>Date</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for consultation in consultations %}
+            <tr>
+                <td>{{ consultation.id }}</td>
+                <td>{{ consultation.age }}</td>
+                <td>{{ consultation.description|slice(0,20) }}</td>
+                <td>{{ consultation.date ? consultation.date|date('Y-m-d') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_consultation_show', {'id': consultation.id}) }}">show</a>
+                    <a href="{{ path('app_consultation_edit', {'id': consultation.id}) }}">edit</a>
+                    <a href="{{ path('app_traitement_index', {'id': consultation.id}) }}">voir les traitements</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_consultation_new') }}">Create new</a>
+     
+{% endblock %}

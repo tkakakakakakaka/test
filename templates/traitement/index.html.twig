@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Traitement index{% endblock %}
+
+{% block body %}
+
+    <h1>Traitement de la consultation {{consultation.id}}</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Medicament</th>
+                <th>Quantite</th>
+                <th>Contenant</th>
+                <th>Duree</th>
+                <th>Dose</th>
+                <th>Frequence</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for traitement in traitements %}
+            <tr>
+                <td>{{ traitement.id }}</td>
+                <td>{{ traitement.medicament }}</td>
+                <td>{{ traitement.quantite }}</td>
+                <td>{{ traitement.contenant }}</td>
+                <td>{{ traitement.duree }}</td>
+                <td>{{ traitement.dose }}</td>
+                <td>{{ traitement.frequence }}</td>
+                <td>
+                   <a href="{{ path('app_traitement_show', {'cid': consultation.id, 'tid': traitement.id}) }}">Retour à la consultation</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <a href="{{ path('app_traitement_new', {'id': consultation.id}) }}">Create new</a>
+    <a href="{{ path('app_consultation_index') }}">Retour au consultation</a>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Traitement{% endblock %}
+
+{% block body %}
+    <h1>Traitement</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ traitement.id }}</td>
+            </tr>
+            <tr>
+                <th>Medicament</th>
+                <td>{{ traitement.medicament }}</td>
+            </tr>
+            <tr>
+                <th>Quantite</th>
+                <td>{{ traitement.quantite }}</td>
+            </tr>
+            <tr>
+                <th>Contenant</th>
+                <td>{{ traitement.contenant }}</td>
+            </tr>
+            <tr>
+                <th>Duree</th>
+                <td>{{ traitement.duree }}</td>
+            </tr>
+            <tr>
+                <th>Dose</th>
+                <td>{{ traitement.dose }}</td>
+            </tr>
+            <tr>
+                <th>Frequence</th>
+                <td>{{ traitement.frequence }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_traitement_index', {'id': consultation.id}) }}">voir les traitements</a>
+
+    <a href="{{ path('app_traitement_edit', {'id': traitement.id}) }}">edit</a>
+
+    {{ include('traitement/_delete_form.html.twig') }}
+{% endblock %}
