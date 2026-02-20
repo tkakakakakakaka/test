@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Consultation;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -40,4 +41,15 @@ class ConsultationRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+            public function findByExampleField(User $medecin)
+            {
+                return $this->createQueryBuilder('c')
+                    ->join('c.patient', 'p')
+                    ->addSelect('p')
+                    ->where('c.medecin = :medecin')
+                    ->setParameter('medecin', $medecin)
+                    ->getQuery()
+                    ->getResult();
+            }
 }
+

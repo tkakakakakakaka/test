@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes patients{% endblock %}
+
+{% block body %}
+ <h1 class="mb-4 text-center">Patient</h1>
+
+<table class="table table-striped table-hover table-bordered align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>numéro sécurité social</th>
+                <th>nom</th>
+                <th>prenom</th>
+                <th>genre</th>
+                <th>email</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for consultation in consultations  %}
+            <tr>
+                <td>{{ consultation.patient.ssn }}</td>
+                <td>{{ consultation.patient.nom }}</td>
+                <td>{{ consultation.patient.prenom }}</td>
+                <td>{{ consultation.patient.genre }}</td>
+                <td>{{ consultation.patient.email }}</td>
+                
+                
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5" class="text-center">Aucun enregistrement trouvé</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

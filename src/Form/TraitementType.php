@@ -8,6 +8,9 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+
+
 
 
 class TraitementType extends AbstractType
@@ -17,15 +20,17 @@ class TraitementType extends AbstractType
         $builder
             ->add('medicament')
             ->add('quantite')
-            ->add('contenant')
+            ->add('contenant', ChoiceType::class,[
+                'choices' => [
+                    'boite' => 'boite',
+                    'tube' => 'tube',
+                    'pilulier' => 'pilulier',
+                    'flacons' => 'flacons',
+                ]
+            ])
             ->add('duree')
             ->add('dose')
-            ->add('frequence')
-            ->add('consultation', EntityType::class, [
-                'class' => Consultation::class,
-                'choice_label' => 'id',
-                'mapped' => true,
-            ])
+            ->add('frequence') 
         ;
     }
 

@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+
 #[ORM\Entity(repositoryClass: ConsultationRepository::class)]
 class Consultation
 {
@@ -30,6 +31,16 @@ class Consultation
      */
     #[ORM\OneToMany(targetEntity: Traitement::class, mappedBy: 'consultation')]
     private Collection $traitements;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $patient = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $medecin = null;
+
+  
 
     public function __construct()
     {
@@ -106,4 +117,30 @@ class Consultation
 
         return $this;
     }
+    public function getPatient(): ?User
+    {
+        return $this->patient;
+    }
+
+    public function setPatient(User $patient): static
+    {
+        $this->patient = $patient;
+        return $this;
+    }
+
+    public function getMedecin(): ?User
+    {
+        return $this->medecin;
+    }
+
+    public function setMedecin(User $medecin): static
+    {
+        $this->medecin = $medecin;
+        return $this;
+    }
+
+
+  
+
+  
 }

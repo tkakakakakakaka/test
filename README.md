@@ -19,3 +19,6 @@ venir par la suite modifier pour faire correspondre a la question
         'traitements' => $consultation->getTraitements(),
     ]);
 }
+
+# Question 17 
+symfony composer require knplabs/knp-paginator-bundle

@@ -3,20 +3,21 @@
 {% block title %}Traitement index{% endblock %}
 
 {% block body %}
+<div class="container my-5">
+    <h1 class="mb-4 text-center">Traitement de la consultation {{ consultation.id }}</h1>
 
-    <h1>Traitement de la consultation {{consultation.id}}</h1>
-
-    <table class="table">
-        <thead>
+    <table class="table table-striped table-hover table-bordered align-middle">
+        <thead class="table-dark">
             <tr>
                 <th>Id</th>
-                <th>Medicament</th>
-                <th>Quantite</th>
+                <th>Médicament</th>
+                <th>Quantité</th>
                 <th>Contenant</th>
-                <th>Duree</th>
+                <th>Durée</th>
                 <th>Dose</th>
-                <th>Frequence</th>
-                <th>actions</th>
+                <th>Fréquence</th>
+                <th>Détail du traitement</th>
+                <th>Modifier le traitement</th>
             </tr>
         </thead>
         <tbody>
@@ -30,16 +31,31 @@
                 <td>{{ traitement.dose }}</td>
                 <td>{{ traitement.frequence }}</td>
                 <td>
-                   <a href="{{ path('app_traitement_show', {'cid': consultation.id, 'tid': traitement.id}) }}">Retour à la consultation</a>
+                    <a class="btn btn-sm btn-info me-1" href="{{ path('app_traitement_show', {'cid': consultation.id, 'tid': traitement.id}) }}">
+                        Voir les détails du traitement
+                    </a>
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-info me-1" href="{{ path('app_traitement_edit', {'cid': consultation.id, 'tid': traitement.id}) }}">
+                        Modifier
+                    </a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="8">no records found</td>
+                <td colspan="8" class="text-center">Aucun enregistrement trouvé</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-    <a href="{{ path('app_traitement_new', {'id': consultation.id}) }}">Create new</a>
-    <a href="{{ path('app_consultation_index') }}">Retour au consultation</a>
+
+    <div class="text-center mt-4">
+        <a class="btn btn-primary btn-lg me-2" href="{{ path('app_traitement_new', {'id': consultation.id}) }}">
+            Créer un nouveau traitement
+        </a>
+        <a class="btn btn-secondary btn-lg" href="{{ path('app_consultation_index') }}">
+            Retour aux consultations
+        </a>
+    </div>
+</div>
 {% endblock %}
