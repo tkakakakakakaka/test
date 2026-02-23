@@ -10,6 +10,10 @@ pour ce qui est de la relation ManyToOne
 Je décide de faire un symfony console make:crud Traitement pour simplifier la création des dossiers et je vais
 venir par la suite modifier pour faire correspondre a la question
 
+changer le controller les pages twig et le formulaire
+pas oublier la page index de consultation et la modifier
+
+
 
 #[Route('/consults/{id}/traitements', name: 'app_traitement_index', methods: ['GET'])]
     public function index(Consultation $consultation): Response

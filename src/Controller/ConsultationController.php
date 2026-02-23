@@ -15,11 +15,14 @@ use Knp\Component\Pager\PaginatorInterface;
 #[Route('/consults')]
 final class ConsultationController extends AbstractController
 {
+    
+
     #[Route(name: 'app_consultation_index', methods: ['GET'])]
     public function index(ConsultationRepository $consultationRepository, PaginatorInterface $paginator, Request $request): Response
     {
-       $query = $consultationRepository->createQueryBuilder('c')
-        ->getQuery();
+        $filtre = $request->query->get('filtre');
+        $query = $consultationRepository->rechercheconsultation($filtre);
+        
 
         $pagination = $paginator->paginate(
         $query,                              
@@ -27,7 +30,7 @@ final class ConsultationController extends AbstractController
         10          
         );
 
-        return $this->render('consultation/index.html.twig', ['pagination' => $pagination, ]);
+        return $this->render('consultation/index.html.twig', ['pagination' => $pagination,'filtre' => $filtre ]);
     }
 
     #[Route('/new', name: 'app_consultation_new', methods: ['GET', 'POST'])]
@@ -88,17 +91,16 @@ final class ConsultationController extends AbstractController
     }
 
     #[Route('/patient', name: 'app_consultation_patient')]
-    public function mesPatients(ConsultationRepository $consultationRepository): Response
+    public function mesPatients(Request $request, ConsultationRepository $consultationRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_MEDECIN');
-
         $medecin = $this->getUser();
 
-        $consultations = $consultationRepository->findByExampleField($medecin);
+        $filtre2 = $request->query->get('filtre2'); 
 
-        return $this->render('consultation/patient.html.twig', [
-            'consultations' => $consultations,
-        ]);
+        $consultations = $consultationRepository->recherchepatient($medecin, $filtre2);
+
+        return $this->render('consultation/patient.html.twig', ['consultations' => $consultations,'filtre2' => $filtre2, ]);
     }
    
 

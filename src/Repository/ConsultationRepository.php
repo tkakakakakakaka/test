@@ -48,8 +48,52 @@ class ConsultationRepository extends ServiceEntityRepository
                     ->addSelect('p')
                     ->where('c.medecin = :medecin')
                     ->setParameter('medecin', $medecin)
+                    ->groupBy('p.id')
                     ->getQuery()
                     ->getResult();
             }
+
+           public function rechercheconsultation(?string $filtre)
+            {
+                $qb = $this->createQueryBuilder('c')
+                    ->innerJoin('c.patient', 'p')
+                    ->addSelect('p');
+
+                if ($filtre) {
+                    $qb->andWhere(
+                        $qb->expr()->orX(
+                            'LOWER(p.nom) LIKE :filtre',
+                            'LOWER(p.prenom) LIKE :filtre',
+                            'p.ssn LIKE :filtre'
+                        )
+                    )
+                    ->setParameter('filtre', '%' . strtolower($filtre) . '%');
+                }
+                return $qb->getQuery();
+            }
+
+           public function recherchepatient(User $medecin, ?string $filtre2)
+            {
+                $qb = $this->createQueryBuilder('c')
+                    ->join('c.patient', 'p')
+                    ->addSelect('p')
+                    ->where('c.medecin = :medecin')
+                    ->setParameter('medecin', $medecin)
+                    ->groupBy('p.id'); 
+
+                if ($filtre2) {
+                    $qb->andWhere(
+                        $qb->expr()->orX(
+                            'LOWER(p.nom) LIKE :filtre2',
+                            'LOWER(p.prenom) LIKE :filtre2',
+                            'p.ssn LIKE :filtre2'
+                        )
+                    )
+                    ->setParameter('filtre2', '%' . strtolower($filtre2) . '%');
+                }
+
+                return $qb->getQuery()->getResult(); 
+            }
 }
+
 

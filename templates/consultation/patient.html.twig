@@ -5,6 +5,12 @@
 {% block body %}
  <h1 class="mb-4 text-center">Patient</h1>
 
+<form method="get" action="{{ path('app_consultation_patient') }}" class="mb-3 text-center">
+    <input type="text" name="filtre2" placeholder="Rechercher" value="{{ filtre2|default('') }}">
+    <button type="submit" class="btn btn-primary btn-sm">Rechercher</button>
+</form>
+ 
+
 <table class="table table-striped table-hover table-bordered align-middle">
         <thead class="table-dark">
             <tr>

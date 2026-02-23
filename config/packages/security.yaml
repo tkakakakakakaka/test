@@ -42,6 +42,7 @@ security:
         # - { path: ^/profile, roles: ROLE_USER }
         
         - { path: ^/consults, roles: [ROLE_MEDECIN, ROLE_PATIENT, ROLE_ADMIN] }
+        - { path: ^/user, roles: [ROLE_ADMIN] }
        
 
 when@test:

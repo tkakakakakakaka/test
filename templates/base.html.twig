@@ -23,7 +23,7 @@
                         </li>
                         {% if is_granted('ROLE_MEDECIN') %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ path('app_consultation_index') }}">liste desconsultations</a>
+                                <a class="nav-link" href="{{ path('app_consultation_index') }}">liste des consultations</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ path('app_consultation_patient') }}">mes patients</a>
@@ -38,8 +38,11 @@
 
                         {% if is_granted('ROLE_ADMIN') %}
                         <li class="nav-item">
-                            <a class="nav-link" href="">je sais pas</a>
+                            <a class="nav-link" href="{{ path('app_user_index') }}">Utilisateur</a>
                         </li>
+                        <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_consultation_index') }}">liste des consultations</a>
+                            </li>
                         {% endif %}
            
 
@@ -50,6 +53,9 @@
                         {% else %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ path('app_login') }}">se connecter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_register') }}">s'enregistrer</a>
                             </li>
                         {% endif %}
                         <li class="nav-item">
