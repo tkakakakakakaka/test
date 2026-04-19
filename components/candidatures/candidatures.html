@@ -1,0 +1,75 @@
+<div class="dashboard-container">
+  <header class="dash-header">
+    <div class="welcome">
+      <h1>
+        <span class="material-symbols-outlined">
+          {{ auth.isTuteurPro() ? 'group' : 'assignment_ind' }}
+        </span> 
+        {{ auth.isTuteurPro() ? 'Mes Stagiaires' : 'Suivi des Candidatures' }}
+      </h1>
+      <p>
+        {{ auth.isTuteurPro() ? 'Liste des étudiants sous votre supervision' : 'Gestion et validation des dossiers de stage' }}
+      </p>
+    </div>
+  </header>
+
+  <section class="card full-width">
+    <div class="card-head">
+      <h2>Liste des stages</h2>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Étudiant</th>
+          <th>Entreprise</th>
+          <th>Période</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (s of stages(); track s.id) {
+          <tr>
+            <td>
+              <div class="user-cell">
+                <span class="avatar">{{ s.etudiant?.nom?.charAt(0) ?? '?' }}</span>
+                <div>
+                  <strong>{{ s.etudiant?.prenom }} {{ s.etudiant?.nom }}</strong>
+                  <small>{{ s.etudiant?.email }}</small>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="company-info">
+                <strong>{{ s.tuteurPro?.entreprise?.raisonSociale ?? 'N/A' }}</strong>
+                <small>{{ s.tuteurPro?.entreprise?.ville }}</small>
+              </div>
+            </td>
+            <td>
+              <span class="date-range">
+                {{ s.dateDeb | date:'dd/MM/yy' }} - {{ s.dateFin | date:'dd/MM/yy' }}
+              </span>
+            </td>
+            <td>
+              <span class="badge" 
+                [class.badge-actif]="s.statutValidation === 'actif'" 
+                [class.badge-attente]="s.statutValidation !== 'actif'">
+                {{ s.statutValidation === 'actif' ? 'Actif' : 'En attente' }}
+              </span>
+            </td>
+            <td>
+              <button class="btn-icon-sm edit" [routerLink]="['../candidatures', s.id]">
+                <span class="material-symbols-outlined">visibility</span>
+              </button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="empty">Aucun étudiant suivi pour le moment.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </section>
+</div>

@@ -1,0 +1,99 @@
+<div class="dashboard-container fade-in" *ngIf="soutenance; else loading">
+  
+  <header class="dash-header">
+    <div class="header-content">
+      <div class="welcome">
+        <h1>
+          <span class="material-symbols-outlined header-icon">edit_note</span> 
+          Évaluation de la Soutenance
+        </h1>
+        <p class="student-name">
+          Étudiant : <strong>{{ $any(soutenance.etudiant)?.prenom }} {{ $any(soutenance.etudiant)?.nom }}</strong>
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <div class="glass-card">
+    <div class="form-container">
+      
+      <div class="form-section">
+        <h3 class="section-title">
+          <span class="material-symbols-outlined">schedule</span> Informations de passage
+        </h3>
+        
+        <div class="input-grid">
+          <div class="input-group" [class.readonly]="!auth.isAdmin()">
+            <label>Salle ou Lien de visioconférence</label>
+            <input 
+              type="text" 
+              [(ngModel)]="soutenance.salleOuLien" 
+              [disabled]="!auth.isAdmin()"
+              placeholder="Ex: Salle A102 ou lien Teams">
+          </div>
+
+          <div class="input-group" [class.readonly]="!auth.isAdmin()">
+            <label>Date et Heure</label>
+            <input 
+              type="datetime-local" 
+              [(ngModel)]="soutenance.dateHeure" 
+              [disabled]="!auth.isAdmin()">
+          </div>
+        </div>
+      </div>
+
+      <div class="separator"></div>
+
+      <div class="form-section">
+        <h3 class="section-title">
+          <span class="material-symbols-outlined">grading</span> Évaluation chiffrée
+        </h3>
+        
+        <div class="input-grid">
+          <div class="input-group" [class.readonly]="!auth.isTuteurPro() && !auth.isAdmin()">
+            <label>Note Entreprise (/20)</label>
+            <input 
+              type="number" 
+              [(ngModel)]="soutenance.noteEntreprise" 
+              [disabled]="!auth.isTuteurPro() && !auth.isAdmin()"
+              placeholder="0.00">
+          </div>
+
+          <div class="input-group" [class.readonly]="!auth.isEnseignant() && !auth.isAdmin()">
+            <label>Note Enseignant (/20)</label>
+            <input 
+              type="number" 
+              [(ngModel)]="soutenance.noteEnseignant" 
+              [disabled]="!auth.isEnseignant() && !auth.isAdmin()"
+              placeholder="0.00">
+          </div>
+        </div>
+
+        <div class="input-group full-width" style="margin-top: 20px;" [class.readonly]="!auth.isTuteurPro() && !auth.isAdmin()">
+          <label>Commentaire du Jury</label>
+          <textarea 
+            [(ngModel)]="soutenance.commentaireJury" 
+            [disabled]="!auth.isTuteurPro() && !auth.isAdmin()"
+            rows="5"
+            placeholder="Observations détaillées sur la prestation de l'étudiant...">
+          </textarea>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="main-submit-btn" (click)="enregistrer()">
+          <span class="material-symbols-outlined">save</span>
+          Enregistrer les notes
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="loading-state">
+    <div class="spinner"></div>
+    <p>Récupération du dossier étudiant...</p>
+  </div>
+</ng-template>

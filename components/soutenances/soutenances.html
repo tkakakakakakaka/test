@@ -1,0 +1,68 @@
+<div class="dashboard-container">
+  <header class="dash-header">
+    <div class="welcome">
+      <h1><span class="material-symbols-outlined">school</span> Soutenances</h1>
+      <p>{{ auth.isEtudiant() ? 'Détails de votre présentation' : 'Planning des présentations finales' }}</p>
+    </div>
+  </header>
+
+  <section class="card full-width">
+    <div class="card-head">
+      <h2><span class="material-symbols-outlined">calendar_month</span> Liste des soutenances</h2>
+      
+    @if (auth.isAdmin()) {
+        <a routerLink="new" class="link-all">+ Planifier →</a>
+      }
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          @if (!auth.isEtudiant()) { <th>Étudiant</th> }
+          <th>Date & Heure</th>
+          <th>Lieu / Lien</th>
+          <th>Note Tuteur</th>
+          <th>Note Prof</th>
+          
+          @if (!auth.isEtudiant()) { <th>Actions</th> }
+        </tr>
+      </thead>
+      <tbody>
+        @for (s of soutenances(); track s.id) {
+          <tr>
+            @if (!auth.isEtudiant()) {
+              <td><strong>{{ $any(s.etudiant).prenom }} {{ $any(s.etudiant).nom }}</strong></td>
+            }
+            
+            <td>{{ s.dateHeure | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td><span class="location-tag">{{ s.salleOuLien ?? 'À définir' }}</span></td>
+            
+            <td>{{ s.noteEntreprise ?? '-' }} / 20</td>
+            <td>{{ s.noteEnseignant ?? '-' }} / 20</td>
+
+            @if (!auth.isEtudiant()) {
+              <td>
+                <button class="btn-icon-sm edit" [routerLink]="['modifier', s.id]">
+                  <span class="material-symbols-outlined">edit_note</span>
+                </button>
+                @if (auth.isAdmin()) {
+               <button class="btn-icon-sm delete" (click)="supprimerSoutenance(s.id)"> 
+                <span class="material-symbols-outlined">delete</span>
+              </button>
+        
+      }
+              </td>
+            }
+            
+          </tr>
+        } @empty {
+          <tr>
+            <td [attr.colspan]="auth.isEtudiant() ? 3 : 6" class="empty">
+              Aucune soutenance planifiée pour le moment.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </section>
+</div>

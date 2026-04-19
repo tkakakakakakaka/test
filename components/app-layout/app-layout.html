@@ -1,0 +1,163 @@
+<div class="layout-wrapper">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img src="logo-univ-orleans.png" alt="Université d'Orléans" class="logo-univ">
+    </div>
+
+    <ul class="sidebar-menu">
+
+      <!-- ADMIN -->
+      @if (auth.isAdmin()) {
+        <li class="menu-section">
+          <span class="material-symbols-outlined">shield</span> Admin
+        </li>
+        <li>
+          <a routerLink="/admin/dashboard" routerLinkActive="active">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span>Accueil</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/admin/utilisateurs" routerLinkActive="active">
+            <span class="material-symbols-outlined">manage_accounts</span>
+            <span>Utilisateurs</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/admin/stages" routerLinkActive="active">
+            <span class="material-symbols-outlined">work</span>
+            <span>Stages</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/admin/soutenances" routerLinkActive="active">
+            <span class="material-symbols-outlined">school</span>
+            <span>Soutenances</span>
+          </a>
+        </li>
+      }
+
+      <!-- ENSEIGNANT -->
+      @if (auth.isEnseignant()) {
+        <li class="menu-section">
+          <span class="material-symbols-outlined">person_book</span> Enseignant
+        </li>
+        <li>
+          <a routerLink="/enseignant/dashboard" routerLinkActive="active">
+            <span class="material-symbols-outlined">home</span>
+            <span>Accueil</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/enseignant/candidatures" routerLinkActive="active">
+            <span class="material-symbols-outlined">groups</span>
+            <span>Étudiants</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/enseignant/comptes-rendus" routerLinkActive="active">
+            <span class="material-symbols-outlined">description</span>
+            <span>Comptes rendus</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/enseignant/disponibilite" routerLinkActive="active">
+            <span class="material-symbols-outlined">event_available</span>
+            <span>Disponibilité</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/enseignant/soutenances" routerLinkActive="active">
+            <span class="material-symbols-outlined">school</span>
+            <span>Soutenances</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/enseignant/visites" routerLinkActive="active">
+            <span class="material-symbols-outlined">commute</span>
+            <span>Visites</span>
+          </a>
+        </li>
+      }
+
+      <!-- ÉTUDIANT -->
+      @if (auth.isEtudiant()) {
+        <li class="menu-section">
+          <span class="material-symbols-outlined">school</span> Étudiant
+        </li>
+        <li>
+          <a routerLink="/etudiant/dashboard" routerLinkActive="active">
+            <span class="material-symbols-outlined">home</span>
+            <span>Accueil</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/etudiant/candidatures" routerLinkActive="active">
+            <span class="material-symbols-outlined">work_outline</span>
+            <span>Candidature</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/etudiant/soutenances" routerLinkActive="active">
+            <span class="material-symbols-outlined">event</span>
+            <span>Soutenances</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/etudiant/disponibilite" routerLinkActive="active">
+            <span class="material-symbols-outlined">calendar_today</span>
+            <span>Disponibilité</span>
+          </a>
+        </li>
+      }
+
+      <!-- TUTEUR PRO / EMPLOYÉ -->
+      @if (auth.isTuteurPro()) {
+        <li class="menu-section">
+          <span class="material-symbols-outlined">business</span> Employé
+        </li>
+        <li>
+          <a routerLink="/tuteur/dashboard" routerLinkActive="active">
+            <span class="material-symbols-outlined">home</span>
+            <span>Accueil</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/tuteur/candidatures" routerLinkActive="active">
+            <span class="material-symbols-outlined">business_center</span>
+            <span>Mes stages</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/tuteur/disponibilite" routerLinkActive="active">
+            <span class="material-symbols-outlined">event_available</span>
+            <span>Disponibilité</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/tuteur/soutenances" routerLinkActive="active">
+            <span class="material-symbols-outlined">school</span>
+            <span>Soutenances</span>
+          </a>
+        </li>
+      }
+
+    </ul>
+
+    <div class="logout-area">
+      <button class="btn-exit" (click)="logout()">
+        <span class="material-symbols-outlined">logout</span>
+        <span>Déconnexion</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="content-container">
+    <header class="main-header">
+      <h1>UNIVERSITÉ D'ORLÉANS</h1>
+    </header>
+    <div class="page-content">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

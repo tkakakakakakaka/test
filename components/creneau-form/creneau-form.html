@@ -1,0 +1,43 @@
+<div class="dashboard-container fade-in">
+  <div class="form-card shadow-lg">
+    
+    <div class="form-header">
+      <div class="icon-circle">
+        <span class="material-symbols-outlined">more_time</span>
+      </div>
+      <div>
+        <h2>Nouveau créneau</h2>
+        <p>Définissez vos disponibilités pour les prochaines soutenances</p>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="form-body">
+      <div class="form-group">
+        <label><span class="material-symbols-outlined">calendar_today</span> Date du jour</label>
+        <input type="date" [(ngModel)]="nouveauCreneau.dateJour" class="custom-input">
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label><span class="material-symbols-outlined">schedule</span> Heure de début</label>
+          <input type="time" [(ngModel)]="nouveauCreneau.heureDebut" class="custom-input">
+        </div>
+        
+        <div class="form-group">
+          <label><span class="material-symbols-outlined">history</span> Heure de fin</label>
+          <input type="time" [(ngModel)]="nouveauCreneau.heureFin" class="custom-input">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-footer">
+      <button class="btn-primary" (click)="enregistrer()">
+        <span class="material-symbols-outlined">check_circle</span>
+        Ajouter à mon agenda
+      </button>
+    </div>
+
+  </div>
+</div>

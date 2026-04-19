@@ -1,0 +1,92 @@
+<div class="dashboard-container">
+  <header class="dash-header">
+    <div class="welcome">
+      <h1><span class="material-symbols-outlined">manage_accounts</span> Gestion des Utilisateurs</h1>
+      <p>Administrez les accès et les rôles de la plateforme</p>
+    </div>
+  </header>
+
+  <section class="card full-width">
+    <div class="card-head">
+      <h2>Liste des comptes ({{ totalUsers() }})</h2>
+      <a routerLink="/admin/utilisateurs/new" class="link-add">
+            <span class="material-symbols-outlined">add</span> Ajouter
+          </a>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Utilisateur</th>
+          <th>Rôles</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (u of paginatedUsers(); track u.id) {
+          <tr>
+            <td>
+              <div class="user-cell">
+                <span class="avatar">{{ u.nom.charAt(0) }}</span>
+                <div>
+                  <strong>{{ u.prenom }} {{ u.nom }}</strong>
+                  <small>{{ u.email }}</small>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="roles-badges">
+                @for (role of (u.roles ?? []); track role) {
+                  @if (role !== 'ROLE_USER') {
+                    <span class="role-badge">
+                      {{ role.replace('ROLE_', '') }}
+                      <button class="badge-remove" (click)="retirerRole(u, role)">✕</button>
+                    </span>
+                  }
+                }
+              </div>
+              <select class="select-field" (change)="changerRole(u, $event)">
+                <option value="">+ Ajouter un rôle</option>
+                <option value="ROLE_ADMIN" [disabled]="u.roles?.includes('ROLE_ADMIN')">Admin</option>
+                <option value="ROLE_ENSEIGNANT" [disabled]="u.roles?.includes('ROLE_ENSEIGNANT')">Enseignant</option>
+                <option value="ROLE_ETUDIANT" [disabled]="u.roles?.includes('ROLE_ETUDIANT')">Étudiant</option>
+                <option value="ROLE_TUTEUR_PRO" [disabled]="u.roles?.includes('ROLE_TUTEUR_PRO')">Tuteur Pro</option>
+              </select>
+            </td>
+            <td>
+              <span class="badge" [class.badge-actif]="!u.compteBloque" [class.badge-bloque]="u.compteBloque">
+                {{ u.compteBloque ? 'Bloqué' : 'Actif' }}
+              </span>
+            </td>
+            <td>
+              <button class="btn-icon-sm edit"><span class="material-symbols-outlined">edit</span></button>
+              <button class="btn-icon-sm delete" (click)="supprimerUtilisateur(u)"> 
+                <span class="material-symbols-outlined">delete</span>
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <div class="pagination">
+      <div class="page-info">
+        Affichage de {{ currentPage() * itemsPerPage() + 1 }} à 
+        {{ [((currentPage() + 1) * itemsPerPage()), totalUsers()].sort()[0] }} sur {{ totalUsers() }}
+      </div>
+      <div class="page-controls">
+        <select (change)="setItemsPerPage(+($any($event.target).value))">
+          <option value="5">5</option>
+          <option value="10" selected>10</option>
+          <option value="25">25</option>
+        </select>
+        <button (click)="prevPage()" [disabled]="currentPage() === 0">‹</button>
+        @for (page of pageNumbers(); track page) {
+          <button [class.active]="currentPage() === page" (click)="goToPage(page)">{{ page + 1 }}</button>
+        }
+        <button (click)="nextPage()" [disabled]="currentPage() === totalPages() - 1">›</button>
+      </div>
+    </div>
+  </section>
+</div>

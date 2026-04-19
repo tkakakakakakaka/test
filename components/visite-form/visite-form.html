@@ -1,0 +1,83 @@
+<div class="dashboard-container fade-in">
+  <div class="form-header">
+    <span class="material-symbols-outlined header-icon">location_home</span>
+    <div class="header-text">
+      <h1>Planifier une visite</h1>
+      <p>Organisation du déplacement en entreprise</p>
+    </div>
+  </div>
+
+  <div class="glass-card">
+    <form class="modern-form">
+      
+      <div class="input-grid">
+        <div class="input-group">
+          <label><span class="material-symbols-outlined">today</span> Date de la visite</label>
+          <input type="date" [(ngModel)]="formData.dateVisite" name="dateVisite">
+        </div>
+
+        <div class="input-group">
+          <label><span class="material-symbols-outlined">schedule</span> Créneau horaire</label>
+          <select [(ngModel)]="formData.creneau" name="creneau">
+            <option [value]="undefined" disabled selected>Choisir un créneau...</option>
+            @for (c of creneaux; track c.id) {
+              <option [value]="c['@id']">
+                {{ c.heureDebut | date:'HH:mm' }} - {{ c.heureFin | date:'HH:mm' }}
+              </option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="separator"></div>
+
+      <div class="input-group full-width">
+        <label><span class="material-symbols-outlined">assignment</span> Stage concerné</label>
+        <select [(ngModel)]="formData.stage" name="stage">
+          <option [value]="undefined" disabled selected>Sélectionner le projet de stage...</option>
+          @for (s of stages; track s.id) {
+            <option [value]="s['@id']">{{ s.titre }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="separator"></div>
+
+      <div class="input-group full-width">
+        <label><span class="material-symbols-outlined">person</span> Étudiant</label>
+        <select [(ngModel)]="formData.etudiant" name="etudiant">
+          <option [value]="undefined" disabled selected>Choisir l'étudiant...</option>
+          @for (e of etudiants; track e.id) {
+            <option [value]="e['@id']">{{ e.prenom }} {{ e.nom }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="input-grid">
+        <div class="input-group">
+          <label><span class="material-symbols-outlined">school</span> Enseignant référent</label>
+          <select [(ngModel)]="formData.enseignant" name="enseignant">
+            <option [value]="undefined" disabled selected>Choisir l'enseignant...</option>
+            @for (ens of enseignants; track ens.id) {
+              <option [value]="ens['@id']">{{ ens.nom }} {{ ens.prenom }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label><span class="material-symbols-outlined">badge</span> Tuteur Pro</label>
+          <select [(ngModel)]="formData.tuteurPro" name="tuteurPro">
+            <option [value]="undefined" disabled selected>Choisir le tuteur...</option>
+            @for (t of tuteurs; track t.id) {
+              <option [value]="t['@id']">{{ t.nom }} {{ t.prenom }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <button type="button" class="main-submit-btn" (click)="creerVisite()" [disabled]="!formData.dateVisite || !formData.stage || !formData.creneau || !formData.etudiant || !formData.enseignant || !formData.tuteurPro">
+        Planifier la visite
+      </button>>
+    </form>
+  </div>
+</div>

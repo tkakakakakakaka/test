@@ -1,0 +1,71 @@
+<div class="dashboard-container">
+  <div class="form-card shadow-lg">
+    <div class="form-header">
+      <div class="icon-circle admin-bg">
+        <span class="material-symbols-outlined">person_add</span>
+      </div>
+      <div>
+        <h2>Gestion des comptes</h2>
+        <p>Création d'un nouvel accès au système</p>
+      </div>
+    </div>
+
+    <div class="form-body">
+      <div class="form-group">
+        <label>Type de profil</label>
+        <div class="type-selector">
+          <label class="radio-card" [class.active]="typeUtilisateur === 'etudiants'">
+            <input type="radio" name="type" [(ngModel)]="typeUtilisateur" value="etudiants">
+            <span class="material-symbols-outlined">school</span> Étudiant
+          </label>
+          <label class="radio-card" [class.active]="typeUtilisateur === 'enseignants'">
+            <input type="radio" name="type" [(ngModel)]="typeUtilisateur" value="enseignants">
+            <span class="material-symbols-outlined">co_present</span> Professeur
+          </label>
+          <label class="radio-card" [class.active]="typeUtilisateur === 'tuteur_pros'">
+            <input type="radio" name="type" [(ngModel)]="typeUtilisateur" value="tuteur_pros">
+            <span class="material-symbols-outlined">business_center</span> Tuteur
+          </label>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Prénom</label>
+          <input type="text" [(ngModel)]="userData.prenom" class="custom-input">
+        </div>
+        <div class="form-group">
+          <label>Nom</label>
+          <input type="text" [(ngModel)]="userData.nom" class="custom-input">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" [(ngModel)]="userData.email" class="custom-input" placeholder="exemple@univ.fr">
+      </div>
+
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <input type="password" [(ngModel)]="userData.mdp" class="custom-input">
+      </div>
+
+      <div class="roles-selection">
+        <label class="checkbox-item">
+          <input type="checkbox" [(ngModel)]="userData.estAdmin">
+          <span class="check-label">Définir comme Administrateur</span>
+        </label>
+        <label class="checkbox-item">
+          <input type="checkbox" [(ngModel)]="userData.estSecretaire">
+          <span class="check-label">Droit Secrétariat</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-footer">
+      <button class="btn-primary" (click)="enregistrer()">
+        <span class="material-symbols-outlined">save</span> Créer le compte
+      </button>
+    </div>
+  </div>
+</div>

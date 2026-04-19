@@ -1,0 +1,67 @@
+<div class="dashboard-container">
+  @if (visite) {
+    <header class="dash-header">
+      <div class="welcome">
+        <h1>
+          <span class="material-symbols-outlined" style="background: #dbeafe; color: #3b82f6; padding: 10px; border-radius: 12px;">description</span> 
+          Rapport de Visite
+        </h1>
+        <p>Suivi de l'étudiant : <strong style="color: #1e293b;">{{ visite.etudiant?.prenom }} {{ visite.etudiant?.nom }}</strong></p>
+      </div>
+    </header>
+
+    <div class="card full-width">
+      <div class="info-summary">
+        <div class="info-item">
+          <span class="material-symbols-outlined">business</span>
+          <span>{{ visite.tuteurPro?.entreprise?.raisonSociale }}</span>
+        </div>
+        <div class="info-item">
+          <span class="material-symbols-outlined">location_on</span>
+          <span>{{ visite.tuteurPro?.entreprise?.ville }}</span>
+        </div>
+        <div class="info-item">
+          <span class="material-symbols-outlined">calendar_today</span>
+          <span>{{ visite.dateVisite | date:'dd MMMM yyyy' }}</span>
+        </div>
+      </div>
+
+      <hr class="separator">
+
+      <div class="form-container">
+        <div class="form-group">
+          <label class="form-label">Participants présents</label>
+          <div class="checkbox-list">
+            @for (p of participants; track p.id) {
+              <label class="checkbox-item">
+                <input type="checkbox" [(ngModel)]="p.checked">
+                {{ p.label }}
+              </label>
+            }
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Détails de la visite</label>
+          <textarea 
+            [(ngModel)]="compteRendu" 
+            placeholder="Décrivez les points abordés, les retours du tuteur et les progrès de l'étudiant..."
+            rows="12">
+          </textarea>
+        </div>
+
+        <div class="form-actions">
+          <button (click)="enregistrer()" class="btn-primary">
+            <span class="material-symbols-outlined">cloud_upload</span> 
+            Enregistrer le rapport final
+          </button>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Chargement des informations de stage...</p>
+    </div>
+  }
+</div>

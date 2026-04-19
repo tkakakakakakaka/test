@@ -1,0 +1,465 @@
+<div class="dashboard-container">
+
+  <!-- Onglets multi-rôles (visibles seulement si > 1 rôle) -->
+  @if (tabs.length > 1) {
+    <div class="tabs-bar">
+      @for (tab of tabs; track tab.key) {
+        <button class="tab-btn"
+          [class.active]="activeTab() === tab.key"
+          (click)="activeTab.set(tab.key)">
+          <span class="material-symbols-outlined">{{ tab.icon }}</span>
+          {{ tab.label }}
+        </button>
+      }
+    </div>
+  }
+
+  <!-- ========== ADMIN ========== -->
+  @if (activeTab() === 'admin') {
+    <header class="dash-header">
+      <div class="welcome">
+        <h1>Vue d'ensemble</h1>
+        <p>Gestion centrale des utilisateurs et des stages</p>
+      </div>
+    </header>
+
+    <div class="overview-grid">
+
+      <section class="card full-width">
+        <div class="card-head">
+          <h2><span class="material-symbols-outlined">manage_accounts</span> Utilisateurs</h2>
+          <a routerLink="/admin/utilisateurs/new" class="link-add">
+            <span class="material-symbols-outlined">add</span> Ajouter
+          </a>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Nom &amp; Prénom</th>
+              <th>Email</th>
+              <th>Type</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (u of paginatedUsers(); track u.id) {
+              <tr>
+                <td>
+                  <div class="user-cell">
+                    <span class="avatar">{{ u.nom.charAt(0) }}</span>
+                    <div>
+                      <strong>{{ u.prenom }} {{ u.nom }}</strong>
+                      <small>{{ u.email }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td>{{ u.email }}</td>
+                <td>
+                  <!-- Badges des rôles actuels -->
+                  <div class="roles-badges">
+                    @for (role of (u.roles ?? []); track role) {
+                      @if (role !== 'ROLE_USER') {
+                        <span class="role-badge">
+                          {{ role.replace('ROLE_', '') }}
+                          <button class="badge-remove" (click)="retirerRole(u, role)">✕</button>
+                        </span>
+                      }
+                    }
+                  </div>
+                  <!-- Select pour changer le rôle principal -->
+                  <select class="select-field" (change)="changerRole(u, $event)">
+                    <option value="">-- Ajouter un rôle --</option>
+                    <option value="ROLE_ADMIN"      [disabled]="u.roles?.includes('ROLE_ADMIN')">Admin</option>
+                    <option value="ROLE_ENSEIGNANT" [disabled]="u.roles?.includes('ROLE_ENSEIGNANT')">Enseignant</option>
+                    <option value="ROLE_ETUDIANT"   [disabled]="u.roles?.includes('ROLE_ETUDIANT')">Étudiant</option>
+                    <option value="ROLE_TUTEUR_PRO" [disabled]="u.roles?.includes('ROLE_TUTEUR_PRO')">Tuteur Pro</option>
+                    <option value="ROLE_DIRECTEUR"  [disabled]="u.roles?.includes('ROLE_DIRECTEUR')">Directeur</option>
+                  </select>
+                </td>
+                <td>
+                  <span class="badge" [class.badge-actif]="!u.compteBloque" [class.badge-bloque]="u.compteBloque">
+                    {{ u.compteBloque ? 'Bloqué' : 'Actif' }}
+                  </span>
+                </td>
+                <td>
+                  <button class="btn-icon-sm edit"><span class="material-symbols-outlined">edit</span></button>
+                  <button class="btn-icon-sm delete" (click)="supprimerUtilisateur(u.id)"><span class="material-symbols-outlined">delete</span></button>
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="5" class="empty">Aucun utilisateur</td></tr>
+            }
+          </tbody>
+        </table>
+<!-- Pagination utilisateurs -->
+<div class="pagination">
+  <div class="page-info">
+    Affichage de {{ currentPage() * itemsPerPage() + 1 }}
+    à {{ [((currentPage() + 1) * itemsPerPage()), totalUsers()].sort()[0] }}
+    sur {{ totalUsers() }} entrées
+  </div>
+
+  <div class="page-controls">
+    <!-- Sélecteur nombre d'éléments -->
+    <select (change)="setItemsPerPage(+($any($event.target).value))">
+      <option value="5"  [selected]="itemsPerPage() === 5">5</option>
+      <option value="10" [selected]="itemsPerPage() === 10">10</option>
+      <option value="25" [selected]="itemsPerPage() === 25">25</option>
+      <option value="50" [selected]="itemsPerPage() === 50">50</option>
+    </select>
+    <span style="font-size:0.8rem; color:#64748b;">par page</span>
+
+    <!-- Boutons navigation -->
+    <button (click)="prevPage()" [disabled]="currentPage() === 0">
+      ‹ Préc.
+    </button>
+
+    @for (page of pageNumbers(); track page) {
+      <button
+        [class.active]="currentPage() === page"
+        (click)="goToPage(page)">
+        {{ page + 1 }}
+      </button>
+    }
+
+    <button (click)="nextPage()" [disabled]="currentPage() === totalPages() - 1">
+      Suiv. ›
+    </button>
+  </div>
+</div>
+      </section>
+
+      <section class="card full-width">
+        <div class="card-head">
+          <h2><span class="material-symbols-outlined">work</span> Suivi des stages</h2>
+          <a routerLink="/admin/stages" class="link-all">Voir tout →</a>
+        </div>
+        <table>
+          <thead>
+            <tr><th>Titre</th><th>Étudiant</th><th>Entreprise</th><th>Statut</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            @for (s of stages(); track s.id) {
+              <tr>
+                <td><strong>{{ s.titre }}</strong></td>
+                <td>{{ s.etudiant?.prenom }} {{ s.etudiant?.nom }}</td>
+                <td>{{ s.tuteurPro?.entreprise?.raisonSociale ?? 'N/A' }}</td>
+                <td>
+                  <select class="select-field">
+                    <option value="propose"         [selected]="s.statutValidation === 'propose'">Proposé</option>
+                    <option value="valide_prof"     [selected]="s.statutValidation === 'valide_prof'">Validé prof</option>
+                    <option value="valide_etudiant" [selected]="s.statutValidation === 'valide_etudiant'">Validé étudiant</option>
+                    <option value="actif"           [selected]="s.statutValidation === 'actif'">Actif</option>
+                    <option value="termine"         [selected]="s.statutValidation === 'termine'">Terminé</option>
+                  </select>
+                </td>
+                <td>
+                  <button class="btn-icon-sm edit"><span class="material-symbols-outlined">edit</span></button>
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="5" class="empty">Aucun stage</td></tr>
+            }
+          </tbody>
+        </table>
+      </section>
+
+    </div>
+  }
+
+  <!-- ========== ENSEIGNANT ========== -->
+  @if (activeTab() === 'enseignant') {
+    <header class="dash-header">
+      <div class="welcome">
+        <h1>Tableau de bord Enseignant</h1>
+        <p>Suivi de vos étudiants en entreprise</p>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-label">ÉTUDIANTS SUIVIS</span>
+          <span class="kpi-value">{{ totalEtudiants() }}</span>
+        </div>
+        <div class="kpi-card warning">
+          <span class="kpi-label">ACTIONS REQUISES</span>
+          <span class="kpi-value">{{ actionsRequises() }}</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="overview-grid">
+      <section class="card">
+        <div class="card-head">
+          <h2><span class="material-symbols-outlined">groups</span> Étudiants suivis</h2>
+          <a routerLink="/enseignant/candidatures" class="link-all">Voir tout →</a>
+        </div>
+        <table>
+          <thead><tr><th>Étudiant</th><th>Entreprise</th><th>Statut</th></tr></thead>
+          <tbody>
+            @for (s of stages(); track s.id) {
+              <tr>
+                <td>
+                  <div class="user-cell">
+                    <span class="avatar">{{ s.etudiant?.nom?.charAt(0) ?? '?' }}</span>
+                    <div>
+                      <strong>{{ s.etudiant?.prenom }} {{ s.etudiant?.nom }}</strong>
+                      <small>{{ s.etudiant?.email }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td>{{ s.tuteurPro?.entreprise?.raisonSociale ?? 'N/A' }}</td>
+                <td>
+                  <span class="badge" [class.badge-actif]="s.statutValidation === 'actif'" [class.badge-attente]="s.statutValidation !== 'actif'">
+                    {{ s.statutValidation === 'actif' ? 'Actif' : 'En attente' }}
+                  </span>
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="3" class="empty">Aucun étudiant suivi</td></tr>
+            }
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <h2><span class="material-symbols-outlined">school</span> Soutenances à venir</h2>
+          <a routerLink="/enseignant/soutenances" class="link-all">Voir tout →</a>
+        </div>
+        <table>
+          <thead><tr><th>Étudiant</th><th>Date</th><th>Lieu</th></tr></thead>
+          <tbody>
+            @for (s of soutenances(); track s.id) {
+              <tr>
+                <td>{{ $any(s.etudiant).prenom }} {{ $any(s.etudiant).nom }}</td>
+                <td>{{ s.dateHeure | date:'dd/MM/yyyy' }}</td>
+                <td>{{ s.salleOuLien ?? 'N/A' }}</td>
+              </tr>
+            } @empty {
+              <tr><td colspan="3" class="empty">Aucune soutenance</td></tr>
+            }
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <h2><span class="material-symbols-outlined">description</span> Comptes rendus</h2>
+          <a routerLink="/enseignant/comptes-rendus" class="link-all">Voir tout →</a>
+        </div>
+        <table>
+          <thead><tr><th>Étudiant</th><th>Entreprise</th><th>Période</th></tr></thead>
+          <tbody>
+            @for (s of stages(); track s.id) {
+              <tr>
+                <td>{{$any(s.etudiant).prenom }} {{ $any(s.etudiant).enom }}</td>
+                <td>{{ s.tuteurPro?.entreprise?.raisonSociale ?? 'N/A' }}</td>
+                <td>{{ s.dateDeb | date:'dd/MM/yy' }} → {{ s.dateFin | date:'dd/MM/yy' }}</td>
+              </tr>
+            } @empty {
+              <tr><td colspan="3" class="empty">Aucun compte rendu</td></tr>
+            }
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <h2><span class="material-symbols-outlined">commute</span> Visites</h2>
+          <a routerLink="/enseignant/visites" class="link-all">Voir tout →</a>
+        </div>
+        <table>
+          <thead><tr><th>Étudiant</th><th>Entreprise</th><th>Période</th></tr></thead>
+          <tbody>
+            @for (s of stages(); track s.id) {
+              <tr>
+                <td>{{ s.etudiant?.prenom }} {{ s.etudiant?.nom }}</td>
+                <td>{{ s.tuteurPro?.entreprise?.raisonSociale ?? 'N/A' }}</td>
+                <td>{{ s.dateDeb | date:'dd/MM/yy' }} → {{ s.dateFin | date:'dd/MM/yy' }}</td>
+              </tr>
+            } @empty {
+              <tr><td colspan="3" class="empty">Aucune visite</td></tr>
+            }
+          </tbody>
+        </table>
+      </section>
+    </div>
+  }
+
+  <!-- ========== ÉTUDIANT ========== -->
+  @if (activeTab() === 'etudiant') {
+    <header class="dash-header">
+      <div class="welcome">
+        <h1>Tableau de bord Étudiant</h1>
+        <p>Suivi de votre stage et de vos disponibilités</p>
+      </div>
+    </header>
+
+    <div class="overview-grid">
+      <section class="card">
+        <div class="card-head">
+          <h2><span class="material-symbols-outlined">work_outline</span> Candidatures</h2>
+          <a routerLink="/etudiant/candidatures" class="link-all">Voir tout →</a>
+        </div>
+        <table>
+          <thead><tr><th>Titre</th><th>Entreprise</th><th>Statut</th><th>Début</th></tr></thead>
+          <tbody>
+            @for (s of stages(); track s.id) {
+              <tr>
+                <td><strong>{{ s.titre }}</strong></td>
+                <td>{{ s.tuteurPro?.entreprise?.raisonSociale ?? 'N/A' }}</td>
+                <td>
+                  <span class="badge" [class.badge-actif]="s.statutValidation === 'actif'" [class.badge-attente]="s.statutValidation !== 'actif'">
+                    {{ s.statutValidation }}
+                  </span>
+                </td>
+                <td>{{ s.dateDeb | date:'dd/MM/yyyy' }}</td>
+              </tr>
+            } @empty {
+              <tr><td colspan="4" class="empty">Aucune candidature</td></tr>
+            }
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <h2><span class="material-symbols-outlined">school</span> Soutenances</h2>
+          <a routerLink="/etudiant/soutenances" class="link-all">Voir tout →</a>
+        </div>
+        <table>
+          <thead><tr><th>Date</th><th>Salle</th><th>Note prof</th><th>Note entreprise</th></tr></thead>
+          <tbody>
+            @for (s of soutenances(); track s.id) {
+              <tr>
+                <td>{{ s.dateHeure | date:'dd/MM/yyyy' }}</td>
+                <td>{{ s.salleOuLien ?? 'N/A' }}</td>
+                <td>{{ s.noteEnseignant ?? '-' }}</td>
+                <td>{{ s.noteEntreprise ?? '-' }}</td>
+              </tr>
+            } @empty {
+              <tr><td colspan="4" class="empty">Aucune soutenance</td></tr>
+            }
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card full-width">
+        <div class="card-head">
+          <h2><span class="material-symbols-outlined">event_available</span> Mes disponibilités</h2>
+          <a routerLink="/etudiant/disponibilite/nouveau" class="link-all">+ Ajouter →</a>
+        </div>
+        <table>
+          <thead><tr><th>Date</th><th>Heure début</th><th>Heure fin</th><th>Actions</th></tr></thead>
+          <tbody>
+            @for (c of creneaux(); track c.id) {
+              <tr>
+                <td>{{ c.dateJour | date:'dd/MM/yyyy' }}</td>
+                <td>{{ c.heureDebut | date:'HH:mm' }}</td>
+                <td>{{ c.heureFin | date:'HH:mm' }}</td>
+                <td>
+                  <button class="btn-icon-sm edit"><span class="material-symbols-outlined">edit</span></button>
+                  <button class="btn-icon-sm delete" (click)="supprimerCreneau(c.id)"><span class="material-symbols-outlined">delete</span></button>
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="4" class="empty">Aucune disponibilité</td></tr>
+            }
+          </tbody>
+        </table>
+      </section>
+    </div>
+  }
+
+  <!-- ========== TUTEUR ========== -->
+  @if (activeTab() === 'tuteur') {
+    <header class="dash-header">
+      <div class="welcome">
+        <h1>Tableau de bord Employé</h1>
+        <p>Suivi de vos stagiaires et disponibilités</p>
+      </div>
+    </header>
+
+    <div class="overview-grid">
+      <section class="card">
+        <div class="card-head">
+          <h2><span class="material-symbols-outlined">groups</span> Mes stagiaires</h2>
+          <a routerLink="/tuteur/candidatures" class="link-all">Voir tout →</a>
+        </div>
+        <table>
+          <thead><tr><th>Étudiant</th><th>Stage</th><th>Statut</th></tr></thead>
+          <tbody>
+            @for (s of stages(); track s.id) {
+              <tr>
+                <td>
+                  <div class="user-cell">
+                    <span class="avatar">{{ s.etudiant?.nom?.charAt(0) ?? '?' }}</span>
+                    <div>
+                      <strong>{{ s.etudiant?.prenom }} {{ s.etudiant?.nom }}</strong>
+                      <small>{{ s.etudiant?.email }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td>{{ s.titre }}</td>
+                <td>
+                  <span class="badge" [class.badge-actif]="s.statutValidation === 'actif'" [class.badge-attente]="s.statutValidation !== 'actif'">
+                    {{ s.statutValidation === 'actif' ? 'Actif' : 'En attente' }}
+                  </span>
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="3" class="empty">Aucun stagiaire</td></tr>
+            }
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <h2><span class="material-symbols-outlined">school</span> Soutenances à venir</h2>
+          <a routerLink="/tuteur/soutenances" class="link-all">Voir tout →</a>
+        </div>
+        <table>
+          <thead><tr><th>Étudiant</th><th>Date</th><th>Lieu</th></tr></thead>
+          <tbody>
+            @for (s of soutenances(); track s.id) {
+              <tr>
+                <td>{{ $any(s.etudiant).prenom }} {{ $any(s.etudiant).nom }}</td>
+                <td>{{ s.dateHeure | date:'dd/MM/yyyy' }}</td>
+                <td>{{ s.salleOuLien ?? 'N/A' }}</td>
+              </tr>
+            } @empty {
+              <tr><td colspan="3" class="empty">Aucune soutenance</td></tr>
+            }
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card full-width">
+        <div class="card-head">
+          <h2><span class="material-symbols-outlined">event_available</span> Mes disponibilités</h2>
+          <a routerLink="/tuteur/disponibilite" class="link-all">+ Ajouter →</a>
+        </div>
+        <table>
+          <thead><tr><th>Date</th><th>Heure début</th><th>Heure fin</th><th>Actions</th></tr></thead>
+          <tbody>
+            @for (c of creneaux(); track c.id) {
+              <tr>
+                <td>{{ c.dateJour | date:'dd/MM/yyyy' }}</td>
+                <td>{{ c.heureDebut }}</td>
+                <td>{{ c.heureFin }}</td>
+                <td>
+                  <button class="btn-icon-sm edit"><span class="material-symbols-outlined">edit</span></button>
+                  <button class="btn-icon-sm delete" (click)="supprimerCreneau(c.id)"><span class="material-symbols-outlined">delete</span></button>
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="4" class="empty">Aucune disponibilité</td></tr>
+            }
+          </tbody>
+        </table>
+      </section>
+    </div>
+  }
+
+</div>

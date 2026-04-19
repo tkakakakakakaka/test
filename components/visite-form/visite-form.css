@@ -1,0 +1,125 @@
+:root {
+  --blue-dark: #1e3a8a;
+  --blue-main: #3b82f6;
+  --blue-light: #eff6ff;
+  --text-dark: #0f172a;
+}
+
+.dashboard-container {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+/* Header */
+.form-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+  color: var(--blue-dark);
+}
+
+.header-icon {
+  font-size: 2.8rem;
+  background: var(--blue-light);
+  padding: 12px;
+  border-radius: 15px;
+  color: var(--blue-main);
+}
+
+.header-text h1 { margin: 0; font-size: 1.8rem; letter-spacing: -0.5px; }
+.header-text p { margin: 0; color: #64748b; font-size: 0.95rem; }
+
+/* Carte */
+.glass-card {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 25px rgba(30, 58, 138, 0.08);
+  border: 1px solid var(--blue-light);
+}
+
+/* Grille et Groupes */
+.input-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.input-group {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.full-width { grid-column: span 2; }
+
+.input-group label {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--blue-dark);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.input-group label span { font-size: 1.2rem; color: var(--blue-main); }
+
+/* Champs & Selects */
+input, select {
+  padding: 12px 15px;
+  border: 2.5px solid #f1f5f9;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  background: #f8fafc;
+  color: var(--text-dark);
+  outline: none;
+}
+
+input:focus, select:focus {
+  border-color: var(--blue-main);
+  background: white;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+/* Séparateur élégant */
+.separator {
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e2e8f0, transparent);
+  margin: 10px 0 20px 0;
+}
+
+/* Bouton Enregistrer (Style validé précédemment) */
+.main-submit-btn {
+  width: 100%;
+  padding: 16px;
+  margin-top: 20px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.main-submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(30, 58, 138, 0.4);
+  filter: brightness(1.1);
+}
+
+.main-submit-btn:disabled {
+  background: #e2e8f0;
+  color: #94a3b8;
+  border: 1px solid #cbd5e1;
+  cursor: not-allowed;
+  box-shadow: none;
+}

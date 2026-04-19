@@ -1,0 +1,56 @@
+<div class="dashboard-container">
+  <header class="dash-header">
+    <div class="welcome">
+      <h1><span class="material-symbols-outlined">work</span> Suivi des Stages</h1>
+      <p>Gestion globale et validation des conventions de stage</p>
+    </div>
+  </header>
+
+  <section class="card full-width">
+    <div class="card-head">
+      <h2>Liste de tous les stages</h2>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Titre</th>
+          <th>Étudiant</th>
+          <th>Entreprise</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (s of stages(); track s.id) {
+          <tr>
+            <td><strong>{{ s.titre }}</strong></td>
+            <td>{{ s.etudiant?.prenom }} {{ s.etudiant?.nom }}</td>
+            <td>{{ s.tuteurPro?.entreprise?.raisonSociale ?? 'N/A' }}</td>
+            <td>
+              <select class="select-field" (change)="modifierStatut(s.id, $event)">
+                <option value="propose" [selected]="s.statutValidation === 'propose'">Proposé</option>
+                <option value="valide_prof" [selected]="s.statutValidation === 'valide_prof'">Validé prof</option>
+                <option value="valide_etudiant" [selected]="s.statutValidation === 'valide_etudiant'">Validé étudiant</option>
+                <option value="actif" [selected]="s.statutValidation === 'actif'">Actif</option>
+                <option value="termine" [selected]="s.statutValidation === 'termine'">Terminé</option>
+              </select>
+            </td>
+            <td>
+              <button class="btn-icon-sm edit" [routerLink]="['../candidatures', s.id]">
+                <span class="material-symbols-outlined">visibility</span>
+              </button>
+              <button class="btn-icon-sm delete"  title="Supprimer" (click)="supprimerStage(s.id)"> 
+                <span class="material-symbols-outlined">delete</span>
+              </button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="empty">Aucun stage enregistré.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </section>
+</div>
